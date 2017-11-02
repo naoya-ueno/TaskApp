@@ -2,6 +2,7 @@ package jp.techacademy.naoya.ueno.taskapp;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -37,14 +39,18 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             String category = mCategorySearch.getText().toString();
 
-            // Realmデータベースから、「カテゴリーと一致する全てのデータを取得して新しい日時順に並べた結果」を取得
-            RealmResults<Task> taskRealmResults = mRealm.where(Task.class).equalTo("category", category).findAllSorted("date", Sort.DESCENDING);
-            // 上記の結果を、TaskList としてセットする
-            mTaskAdapter.setTaskList(mRealm.copyFromRealm(taskRealmResults));
-            // TaskのListView用のアダプタに渡す
-            mListView.setAdapter(mTaskAdapter);
-            // 表示を更新するために、アダプターにデータが変更されたことを知らせる
-            mTaskAdapter.notifyDataSetChanged();
+            if (category.length() != 0) {
+                // Realmデータベースから、「カテゴリーと一致する全てのデータを取得して新しい日時順に並べた結果」を取得
+                RealmResults<Task> taskRealmResults = mRealm.where(Task.class).equalTo("category", category).findAllSorted("date", Sort.DESCENDING);
+                // 上記の結果を、TaskList としてセットする
+                mTaskAdapter.setTaskList(mRealm.copyFromRealm(taskRealmResults));
+                // TaskのListView用のアダプタに渡す
+                mListView.setAdapter(mTaskAdapter);
+                // 表示を更新するために、アダプターにデータが変更されたことを知らせる
+                mTaskAdapter.notifyDataSetChanged();
+            } else {
+                reloadListView();
+            }
         }
     };
 
@@ -60,11 +66,23 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, InputActivity.class);
                 startActivity(intent);
             }
-        });super.onCreate(savedInstanceState);
+        });
 
         // UI部品の設定
         mCategorySearch = (EditText)findViewById(R.id.category_search_text);
         findViewById(R.id.filter_button).setOnClickListener(mOnFilterClickListener);
+
+        mCategorySearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                // EditTextのフォーカスが外れた場合
+                if (hasFocus == false) {
+                    // ソフトキーボードを非表示にする
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                }
+            }
+        });
 
         // Realmの設定
         mRealm = Realm.getDefaultInstance();
@@ -154,4 +172,5 @@ public class MainActivity extends AppCompatActivity {
 
         mRealm.close();
     }
+
 }
