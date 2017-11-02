@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="jp.techacademy.naoya.ueno.taskapp.MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/category_search_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/filter_button"
+            android:layout_alignTop="@+id/filter_button"
+            android:layout_alignBottom="@+id/filter_button"
+            android:layout_marginLeft="10dp"
+            android:hint="カテゴリー"
+            android:focusable="false" />
+
+        <Button
+            android:id="@+id/filter_button"
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="フィルタ"
+            android:textColor="@android:color/white" />
+
+        <ListView
+            android:id="@+id/listView1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/filter_button" />
+
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/plus"
+        app:backgroundTint="@color/colorAccent" />
+
+</android.support.design.widget.CoordinatorLayout>
